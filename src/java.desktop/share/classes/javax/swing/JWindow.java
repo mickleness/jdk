@@ -356,6 +356,12 @@ public class JWindow extends Window implements Accessible,
         paint(g);
     }
 
+    @Override
+    public void paint(Graphics g) {
+        // intentionally skip Window.paint(g) to prevent it from calling g.fillRect(..)
+        paintContainer(g);
+    }
+
     /**
      * Sets whether calls to <code>add</code> and
      * <code>setLayout</code> are forwarded to the <code>contentPane</code>.

@@ -1987,23 +1987,34 @@ public class Container extends Component {
      */
     public void paint(Graphics g) {
         if (isShowing()) {
-            synchronized (getObjectLock()) {
-                if (printing) {
-                    if (printingThreads.contains(Thread.currentThread())) {
-                        return;
-                    }
+            paintContainer(g);
+        }
+    }
+
+    /**
+     * This paints the components in this Container. {@link #paint(Graphics)} already invokes
+     * this method, but this method allows subclasses access to this logic without calling
+     * {@link #paint(Graphics)}.
+     *
+     * @param g the specified Graphics window
+     */
+    protected void paintContainer(Graphics g) {
+        synchronized (getObjectLock()) {
+            if (printing) {
+                if (printingThreads.contains(Thread.currentThread())) {
+                    return;
                 }
             }
-
-            // The container is showing on screen and
-            // this paint() is not called from print().
-            // Paint self and forward the paint to lightweight subcomponents.
-
-            // super.paint(); -- Don't bother, since it's a NOP.
-
-            GraphicsCallback.PaintCallback.getInstance().
-                runComponents(getComponentsSync(), g, GraphicsCallback.LIGHTWEIGHTS);
         }
+
+        // The container is showing on screen and
+        // this paint() is not called from print().
+        // Paint self and forward the paint to lightweight subcomponents.
+
+        // super.paint(); -- Don't bother, since it's a NOP.
+
+        GraphicsCallback.PaintCallback.getInstance().
+                runComponents(getComponentsSync(), g, GraphicsCallback.LIGHTWEIGHTS);
     }
 
     /**
