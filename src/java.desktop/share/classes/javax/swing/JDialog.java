@@ -834,6 +834,11 @@ public class JDialog extends Dialog implements WindowConstants,
         paint(g);
     }
 
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g, false);
+    }
+
    /**
     * Sets the menubar for this dialog.
     *

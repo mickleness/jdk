@@ -3945,15 +3945,26 @@ public class Window extends Container implements Accessible {
      */
     @Override
     public void paint(Graphics g) {
-        if (!isOpaque()) {
+        paint(g, true);
+    }
+
+    /**
+     * Paint this window.
+     *
+     * @param g the specified Graphics window
+     * @param fillBackground if true then this method may call {@link Graphics#fillRect(int, int, int, int)}
+     *                       to reset the background color of the destination Graphics. If false then
+     *                       this method does not attempt to reset the Graphics and will paint on top of
+     *                       anything that is already there.
+     */
+    protected void paint(Graphics g, boolean fillBackground) {
+        if (fillBackground && !isOpaque()) {
             Graphics gg = g.create();
             try {
-                if (gg instanceof Graphics2D gg2d) {
-                    if (!SunHints.VALUE_PAINT_WINDOW_BACKGROUND_OFF.equals(gg2d.getRenderingHint(SunHints.KEY_PAINT_WINDOW_BACKGROUND_COLOR))) {
-                        gg2d.setColor(getBackground());
-                        gg2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-                        gg2d.fillRect(0, 0, getWidth(), getHeight());
-                    }
+                if (gg instanceof Graphics2D) {
+                    gg.setColor(getBackground());
+                    ((Graphics2D) gg).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+                    gg.fillRect(0, 0, getWidth(), getHeight());
                 }
             } finally {
                 gg.dispose();

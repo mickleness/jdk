@@ -356,6 +356,11 @@ public class JWindow extends Window implements Accessible,
         paint(g);
     }
 
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g, false);
+    }
+
     /**
      * Sets whether calls to <code>add</code> and
      * <code>setLayout</code> are forwarded to the <code>contentPane</code>.

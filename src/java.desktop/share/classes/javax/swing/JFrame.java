@@ -470,6 +470,11 @@ public class JFrame  extends Frame implements WindowConstants,
         paint(g);
     }
 
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g, false);
+    }
+
    /**
     * Sets the menubar for this frame.
     * @param menubar the menubar being placed in the frame
