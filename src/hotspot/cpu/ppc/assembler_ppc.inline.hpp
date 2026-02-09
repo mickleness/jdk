@@ -26,7 +26,7 @@
 #ifndef CPU_PPC_ASSEMBLER_PPC_INLINE_HPP
 #define CPU_PPC_ASSEMBLER_PPC_INLINE_HPP
 
-#include "asm/assembler.inline.hpp"
+#include "asm/assembler.hpp"
 #include "asm/codeBuffer.hpp"
 #include "code/codeCache.hpp"
 #include "runtime/vm_version.hpp"
@@ -922,6 +922,10 @@ inline void Assembler::xxpermdi(VectorSRegister d, VectorSRegister a, VectorSReg
 inline void Assembler::xxmrghw( VectorSRegister d, VectorSRegister a, VectorSRegister b) { emit_int32( XXMRGHW_OPCODE | vsrt(d) | vsra(a) | vsrb(b)); }
 inline void Assembler::xxmrglw( VectorSRegister d, VectorSRegister a, VectorSRegister b) { emit_int32( XXMRGHW_OPCODE | vsrt(d) | vsra(a) | vsrb(b)); }
 inline void Assembler::xxsel(   VectorSRegister d, VectorSRegister a, VectorSRegister b, VectorSRegister c) { emit_int32( XXSEL_OPCODE | vsrt(d) | vsra(a) | vsrb(b) | vsrc(c)); }
+
+inline void Assembler::xscmpeqdp(VectorSRegister t, VectorSRegister a, VectorSRegister b) { emit_int32( XSCMPEQDP_OPCODE | vsrt(t) | vsra(a) | vsrb(b) );}
+inline void Assembler::xscmpgedp(VectorSRegister t, VectorSRegister a, VectorSRegister b) { emit_int32( XSCMPGEDP_OPCODE | vsrt(t) | vsra(a) | vsrb(b) );}
+inline void Assembler::xscmpgtdp(VectorSRegister t, VectorSRegister a, VectorSRegister b) { emit_int32( XSCMPGTDP_OPCODE | vsrt(t) | vsra(a) | vsrb(b) );}
 
 // VSX Extended Mnemonics
 inline void Assembler::xxspltd( VectorSRegister d, VectorSRegister a, int x)             { xxpermdi(d, a, a, x ? 3 : 0); }
