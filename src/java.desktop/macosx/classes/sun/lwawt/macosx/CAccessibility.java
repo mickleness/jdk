@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -1030,15 +1030,15 @@ final class CAccessibility implements PropertyChangeListener {
             }
 
             if (!allowIgnored) {
-                // If a Component isn't visible then it should be classified as "ignored".
-                // And since `allowedIgnored` is false we can skip any non-visible component.
-                boolean isShowing = isShowing(context);
-
-                if (isShowing) {
+                // If a Component isn't showing then it should be classified as
+                // "ignored", and we should skip it and its descendants
+                if (isShowing(context)) {
                     final AccessibleRole role = context.getAccessibleRole();
-                    if (role != null && ignoredRoles != null && ignoredRoles.contains(roleKey(role))) {
+                    if (role != null && ignoredRoles != null &&
+                            ignoredRoles.contains(roleKey(role))) {
                         // Get the child's unignored children.
-                        _addChildren(child, whichChildren, false, childrenAndRoles, ChildrenOperations.COMMON);
+                        _addChildren(child, whichChildren, false,
+                                childrenAndRoles, ChildrenOperations.COMMON);
                     } else {
                         childrenAndRoles.add(child);
                         childrenAndRoles.add(getAccessibleRole(child));
@@ -1057,17 +1057,16 @@ final class CAccessibility implements PropertyChangeListener {
     }
 
     /**
-     * Return true if an AccessibleContext is showing.
+     * Return false if an AccessibleContext is not showing
      * <p>
      * This first checks {@link AccessibleComponent#isShowing()}, if possible.
      * If there is no AccessibleComponent then this checks the
-     * AccessibleStateSet for {@link AccessibleState#SHOWING} or
-     * {@link AccessibleState#VISIBLE}. If there is no AccessibleStateSet then
-     * we assume (given the lack of information) the AccessibleContext is
-     * visible, but we recursive check its parent if it exists.
+     * AccessibleStateSet for {@link AccessibleState#SHOWING}. If there is no
+     * AccessibleStateSet then we assume (given the lack of information) the
+     * AccessibleContext may be visible, and we recursive check its parent if
+     * possible.
      *
-     * @return true if an AccessibleContext represents something that is
-     * showing.
+     * Return false if an AccessibleContext is not showing
      */
     private static boolean isShowing(final AccessibleContext context) {
         AccessibleComponent c = context.getAccessibleComponent();
@@ -1078,8 +1077,6 @@ final class CAccessibility implements PropertyChangeListener {
         AccessibleStateSet ass = context.getAccessibleStateSet();
         if (ass != null && ass.contains((AccessibleState.SHOWING))) {
             return true;
-        } if (ass != null && !ass.contains(AccessibleState.VISIBLE)) {
-            return false;
         } else {
             // We don't have an AccessibleComponent. And either we don't
             // have an AccessibleStateSet OR it doesn't include useful
