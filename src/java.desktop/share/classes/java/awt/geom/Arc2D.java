@@ -1053,7 +1053,7 @@ public abstract class Arc2D extends RectangularShape {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc java.awt.Shape}
      * @since 1.2
      */
     public Rectangle2D getBounds2D() {
