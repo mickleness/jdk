@@ -21,10 +21,10 @@
  * questions.
  */
 
-import java.awt.BorderLayout;
-
+import javax.accessibility.AccessibleComponent;
+import javax.accessibility.AccessibleContext;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -42,7 +42,8 @@ import javax.swing.JPanel;
 public class TestVoiceOverHiddenComponentNavigation {
     public static void main(String[] args) throws Exception {
         String INSTRUCTIONS = """
-                Test UI contains a JButton inside an invisible panel.
+                Test UI contains four rows. Each row contains a JButton.
+                Two of the rows are hidden, and two are visible.
 
                 Follow these steps to test the behaviour:
 
@@ -66,14 +67,56 @@ public class TestVoiceOverHiddenComponentNavigation {
     }
 
     private static JFrame createUI() {
-        JFrame frame = new JFrame("A Frame with hidden JButton");
-        JButton button = new JButton("Hidden Button");
-        JPanel panel = new JPanel();
-        panel.add(button);
-        panel.setVisible(false);
-        frame.getContentPane().add(panel, BorderLayout.CENTER);
-        frame.getContentPane().add(new JLabel("Label"), BorderLayout.SOUTH);
-        frame.setSize(200, 100);
+        JPanel rows = new JPanel();
+        rows.setLayout(new BoxLayout(rows, BoxLayout.Y_AXIS));
+        rows.add(createRow("Hidden Button", "Row 1", false, false));
+        rows.add(createRow("Hidden Button", "Row 2", false, true));
+        rows.add(createRow("Visible Button", "Row 3", true, false));
+        rows.add(createRow("Visible Button", "Row 4", true, true));
+
+        JFrame frame = new JFrame("A Frame hidden JButtons");
+        frame.getContentPane().add(rows);
+        frame.pack();
         return frame;
+    }
+
+    /**
+     * Create a row to add to this demo frame.
+     *
+     * @param buttonText the button name/text
+     * @param panelAXName the panel accessible name
+     * @param isVisible whether JPanel.isVisible() should be true
+     * @param useNullAXComponent if true then
+     *                           AccessibleJPanel.getAccessibleComponent
+     *                           returns null. This was added to test a
+     *                           particular code path.
+     * @return a row for the demo frame
+     */
+    private static JPanel createRow(String buttonText, String panelAXName,
+                                    boolean isVisible,
+                                    boolean useNullAXComponent) {
+        JPanel returnValue = new JPanel() {
+            @Override
+            public AccessibleContext getAccessibleContext() {
+                if (accessibleContext == null) {
+                    accessibleContext = new AccessibleJPanel() {
+                        @Override
+                        public AccessibleComponent getAccessibleComponent() {
+                            if (useNullAXComponent) {
+                                return null;
+                            } else {
+                                return super.getAccessibleComponent();
+                            }
+                        }
+                    };
+                    accessibleContext.setAccessibleName(panelAXName);
+                }
+                return accessibleContext;
+            }
+        };
+        returnValue.setVisible(isVisible);
+        JButton button = new JButton(buttonText);
+        returnValue.add(button);
+        return returnValue;
     }
 }
