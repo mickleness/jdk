@@ -48,10 +48,9 @@ public class TestVoiceOverHiddenComponentNavigation {
                 Follow these steps to test the behaviour:
 
                 1. Start the VoiceOver (Press Command + F5) application
-                2. Move VoiceOver cursor to test window if necessary
-                3. Press CTRL + ALT + SHIFT + UP once
-                4. Press CTRL + ALT + LEFT to move the VoiceOver cursor back
-                5. Repeat step 3 until you reach the "Close" button.
+                2. Move VoiceOver cursor to one of the visible buttons.
+                3. Press CTRL + ALT + LEFT to move the VoiceOver cursor back
+                4. Repeat step 3 until you reach the "Close" button.
 
                 If VoiceOver ever references a "Hidden Button": then this test
                 fails.
