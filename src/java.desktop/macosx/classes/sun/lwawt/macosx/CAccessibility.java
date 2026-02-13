@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2026, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011, 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -120,15 +120,6 @@ final class CAccessibility implements PropertyChangeListener {
                 focusChanged();
             }
         }
-    }
-
-    private static final AccessibleRole axLink = new AccessibleRole("AXLink")
-                                                 {};
-    private static AccessibleRole convertRole(final AccessibleRole axRole) {
-        if (AccessibleRole.HYPERLINK == axRole) {
-            return axLink;
-        }
-        return axRole;
     }
 
     private native void focusChanged();
@@ -274,7 +265,7 @@ final class CAccessibility implements PropertyChangeListener {
         final AccessibleContext ac = a.getAccessibleContext();
         if (ac == null) return null;
 
-        final AccessibleRole role = convertRole(ac.getAccessibleRole());
+        final AccessibleRole role = ac.getAccessibleRole();
         return AWTAccessor.getAccessibleBundleAccessor().getKey(role);
     }
 
@@ -629,7 +620,7 @@ final class CAccessibility implements PropertyChangeListener {
                 final AccessibleContext ac = a.getAccessibleContext();
                 if (ac == null) return null;
 
-                final AccessibleRole ar = convertRole(ac.getAccessibleRole());
+                final AccessibleRole ar = ac.getAccessibleRole();
                 if (ar == null) return null;
 
                 return ar.toDisplayString();
@@ -728,8 +719,7 @@ final class CAccessibility implements PropertyChangeListener {
                     String activeDescendantName =
                             activeDescendantAC.getAccessibleName();
                     AccessibleRole activeDescendantRole =
-                            convertRole(
-                                    activeDescendantAC.getAccessibleRole());
+                            activeDescendantAC.getAccessibleRole();
                     // Move active descendant to front of list.
                     // List contains pairs of each selected item's
                     // Accessible and AccessibleRole.
@@ -948,7 +938,7 @@ final class CAccessibility implements PropertyChangeListener {
 
     private static AccessibleRole getAccessibleRole(Accessible a) {
         AccessibleContext ac = a.getAccessibleContext();
-        AccessibleRole role = convertRole(ac.getAccessibleRole());
+        AccessibleRole role = ac.getAccessibleRole();
         Object component = CAccessible.getSwingAccessible(a);
         if (role == null) return null;
         String roleString = role.toString();
