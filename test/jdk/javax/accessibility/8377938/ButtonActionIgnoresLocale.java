@@ -32,18 +32,25 @@ import javax.accessibility.AccessibleAction;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class ButtonActionIgnoresLocale {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         Locale.setDefault(Locale.forLanguageTag("de-DE"));
+        CompletableFuture<String> axActionDesc = new CompletableFuture<>();
+
         SwingUtilities.invokeLater(() -> {
             JButton b = new JButton();
             String s = b.getAccessibleContext().getAccessibleAction().
                     getAccessibleActionDescription(0);
-            System.out.println("Action description: " + s);
-            if (!AccessibleAction.CLICK.equals(s)) {
-                throw new RuntimeException("Test failed.");
-            }
+            axActionDesc.complete(s);
         });
+
+        String s = axActionDesc.get();
+        System.out.println("Action description: " + s);
+        if (!AccessibleAction.CLICK.equals(s)) {
+            throw new RuntimeException("Test failed.");
+        }
     }
 }
