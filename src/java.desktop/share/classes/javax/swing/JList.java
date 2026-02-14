@@ -3836,7 +3836,7 @@ public class JList<E> extends JComponent implements Scrollable, Accessible
             @Override
             public String getAccessibleActionDescription(int i) {
                 if (i == 0) {
-                    return UIManager.getString("AbstractButton.clickText");
+                    return AccessibleAction.CLICK;
                 } else {
                     return null;
                 }
