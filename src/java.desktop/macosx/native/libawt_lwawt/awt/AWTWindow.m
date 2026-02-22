@@ -283,6 +283,10 @@ AWT_NS_WINDOW_IMPLEMENTATION
         [self.nsWindow setTitleVisibility:(IS(bits, TITLE_VISIBLE)) ? NSWindowTitleVisible :NSWindowTitleHidden];
     }
 
+    BOOL axHidden = IS(bits, ACCESSIBILITY_HIDDEN);
+    [self.nsWindow setAccessibilityHidden:axHidden];
+    [self.nsWindow setAccessibilityElement:!axHidden];
+
 }
 
 - (id) initWithPlatformWindow:(jobject)platformWindow
@@ -349,6 +353,10 @@ AWT_ASSERT_APPKIT_THREAD;
     if (IS(bits, SHEET) && owner != nil) {
         [self.nsWindow setStyleMask: NSWindowStyleMaskDocModalWindow];
     }
+
+    BOOL axHidden = IS(bits, ACCESSIBILITY_HIDDEN);
+    [self.nsWindow setAccessibilityHidden:axHidden];
+    [self.nsWindow setAccessibilityElement:!axHidden];
 
     return self;
 }

@@ -126,6 +126,7 @@ public class CPlatformWindow extends CFRetainedResource implements PlatformWindo
     public static final String WINDOW_FULL_CONTENT = "apple.awt.fullWindowContent";
     public static final String WINDOW_TRANSPARENT_TITLE_BAR = "apple.awt.transparentTitleBar";
     public static final String WINDOW_TITLE_VISIBLE = "apple.awt.windowTitleVisible";
+    public static final String WINDOW_ACCESSIBILITY_HIDDEN = "apple.awt.windowAccessibleHidden";
 
     // This system property is named as jdk.* because it is not specific to AWT
     // and it is also used in JavaFX
@@ -173,10 +174,11 @@ public class CPlatformWindow extends CFRetainedResource implements PlatformWindo
     static final int FULLSCREENABLE = 1 << 23;
     static final int TRANSPARENT_TITLE_BAR = 1 << 18;
     static final int TITLE_VISIBLE = 1 << 25;
+    static final int ACCESSIBILITY_HIDDEN = 1 << 28;
 
     static final int _METHOD_PROP_BITMASK = RESIZABLE | HAS_SHADOW | ZOOMABLE | ALWAYS_ON_TOP | HIDES_ON_DEACTIVATE
                                               | DRAGGABLE_BACKGROUND | DOCUMENT_MODIFIED | FULLSCREENABLE
-                                              | TRANSPARENT_TITLE_BAR | TITLE_VISIBLE;
+                                              | TRANSPARENT_TITLE_BAR | TITLE_VISIBLE | ACCESSIBILITY_HIDDEN;
 
     // corresponds to callback-based properties
     static final int SHOULD_BECOME_KEY = 1 << 12;
@@ -265,6 +267,11 @@ public class CPlatformWindow extends CFRetainedResource implements PlatformWindo
         new Property<CPlatformWindow>(WINDOW_TITLE_VISIBLE) {
             public void applyProperty(final CPlatformWindow c, final Object value) {
                 c.setStyleBits(TITLE_VISIBLE, value == null ? true : Boolean.parseBoolean(value.toString()));
+            }
+        },
+        new Property<CPlatformWindow>(WINDOW_ACCESSIBILITY_HIDDEN) {
+            public void applyProperty(final CPlatformWindow c, final Object value) {
+                c.setStyleBits(ACCESSIBILITY_HIDDEN, value == null ? false : Boolean.parseBoolean(value.toString()));
             }
         }
     }) {
@@ -518,6 +525,11 @@ public class CPlatformWindow extends CFRetainedResource implements PlatformWindo
             prop = rootpane.getClientProperty(WINDOW_TITLE_VISIBLE);
             if (prop != null) {
                 styleBits = SET(styleBits, TITLE_VISIBLE, Boolean.parseBoolean(prop.toString()));
+            }
+
+            prop = rootpane.getClientProperty(WINDOW_ACCESSIBILITY_HIDDEN);
+            if (prop != null) {
+                styleBits = SET(styleBits, ACCESSIBILITY_HIDDEN, Boolean.parseBoolean(prop.toString()));
             }
         }
 

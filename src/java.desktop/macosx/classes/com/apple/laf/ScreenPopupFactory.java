@@ -76,6 +76,7 @@ final class ScreenPopupFactory extends PopupFactory {
             popupRootPane.putClientProperty(CPlatformWindow.WINDOW_ALPHA, TRANSLUCENT);
             popupRootPane.putClientProperty(CPlatformWindow.WINDOW_SHADOW, Boolean.TRUE);
             popupRootPane.putClientProperty(CPlatformWindow.WINDOW_FADE_DELEGATE, invoker);
+            popupRootPane.putClientProperty(CPlatformWindow.WINDOW_ACCESSIBILITY_HIDDEN, invoker instanceof JToolTip);
 
             w.setBackground(UIManager.getColor("PopupMenu.translucentBackground"));
             popupRootPane.putClientProperty(CPlatformWindow.WINDOW_DRAGGABLE_BACKGROUND, Boolean.FALSE);
