@@ -287,6 +287,15 @@ AWT_NS_WINDOW_IMPLEMENTATION
     [self.nsWindow setAccessibilityHidden:axHidden];
     [self.nsWindow setAccessibilityElement:!axHidden];
 
+    // Force VoiceOver to re-scan the application's window list
+    // If we are making the window visible to AX again, we must poke the system
+    if (!axHidden && [self.nsWindow isVisible]) {
+        // Notify that the layout changed, focusing on the window itself
+        NSAccessibilityPostNotification(self.nsWindow, NSAccessibilityLayoutChangedNotification);
+
+        // Optional: Specifically notify that a new window "arrived"
+        NSAccessibilityPostNotification(NSApp, NSAccessibilityCreatedNotification);
+    }
 }
 
 - (id) initWithPlatformWindow:(jobject)platformWindow
@@ -359,6 +368,36 @@ AWT_ASSERT_APPKIT_THREAD;
     [self.nsWindow setAccessibilityElement:!axHidden];
 
     return self;
+}
+
+- (void) orderFront {
+    [self.nsWindow orderFront:nil];
+    [self pokeVoiceOver];
+}
+
+- (void) makeKeyAndOrderFront {
+    [self.nsWindow makeKeyAndOrderFront:nil];
+    [self pokeVoiceOver];
+}
+
+// Helper method to ensure VoiceOver registers the "new" window
+- (void) pokeVoiceOver {
+    BOOL axHidden = [self.nsWindow isAccessibilityHidden];
+    if (!axHidden) {
+        // 1. Tell the Application object to refresh its window list
+        // This is usually what fixes the "mouse won't enter window" bug
+        NSAccessibilityPostNotification(NSApp, NSAccessibilityLayoutChangedNotification);
+
+        // 2. Explicitly tell the system the 'Children' of the app changed
+        NSAccessibilityPostNotification(NSApp, NSAccessibilityCreatedNotification);
+
+        // 3. Re-set the window as an element to kick the internal AppKit state
+        [self.nsWindow setAccessibilityElement:YES];
+
+        // 4. Specifically for the "Re-open" case:
+        // Manually trigger the hit-test once to "prime" the system
+        [self.nsWindow accessibilityHitTest:[NSEvent mouseLocation]];
+    }
 }
 
 + (BOOL) isAWTWindow:(NSWindow *)window {

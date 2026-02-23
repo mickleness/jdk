@@ -622,7 +622,8 @@ static BOOL shouldUsePressAndHold() {
 - (id)accessibilityHitTest:(NSPoint)point {
     // If the window is explicitly hidden from AX,
     // stop the hit-test immediately at the window level.
-    if ([[self window] isAccessibilityHidden]) {
+    NSWindow *win = [self window];
+    if (win == nil || [win isAccessibilityHidden]) {
         return nil;
     }
 
