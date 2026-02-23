@@ -619,8 +619,18 @@ static BOOL shouldUsePressAndHold() {
     return NO;
 }
 
-- (id)accessibilityHitTest:(NSPoint)point
-{
+- (id)accessibilityHitTest:(NSPoint)point {
+    // If the window is explicitly hidden from AX,
+    // stop the hit-test immediately at the window level.
+    if ([[self window] isAccessibilityHidden]) {
+        return nil;
+    }
+
+    // If the peer is dead, stop immediately.
+    if (self->m_cPlatformView == nil) {
+        return nil;
+    }
+
     AWT_ASSERT_APPKIT_THREAD;
     JNIEnv *env = [ThreadUtilities getJNIEnv];
 
