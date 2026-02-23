@@ -1106,6 +1106,18 @@ AWT_ASSERT_APPKIT_THREAD;
     return lastKeyWindow;
 }
 
+- (id)accessibilityHitTest:(NSPoint)point {
+    // If the bit is set, the window should be a black hole for AX
+    if ([self isAccessibilityHidden]) return nil;
+
+    // If the peer is dead, stop immediately.
+    if (self.javaPlatformWindow == NULL) {
+        return nil;
+    }
+
+    return [super accessibilityHitTest:point];
+}
+
 @end // AWTWindow
 
 /*
