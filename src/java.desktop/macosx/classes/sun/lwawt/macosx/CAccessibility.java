@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.Arrays;
+import java.util.Locale;
 
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleAction;
@@ -1149,6 +1150,26 @@ final class CAccessibility implements PropertyChangeListener {
                     return ((JTree) sa).isRootVisible();
                 }
                 return false;
+            }
+        }, c);
+    }
+
+    public static Locale getAccessibleLocale(final Accessible a, final Component c) {
+        if (a == null) return null;
+
+        return invokeAndWait(new Callable<Locale>() {
+            @Override
+            public Locale call() throws Exception {
+                final AccessibleContext ac = a.getAccessibleContext();
+                if (ac == null) {
+                    return null;
+                }
+
+                final Locale locale = ac.getLocale();
+                if (ac == null) {
+                    return null;
+                }
+                return locale;
             }
         }, c);
     }
