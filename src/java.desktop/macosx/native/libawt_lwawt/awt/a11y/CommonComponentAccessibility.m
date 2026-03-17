@@ -35,10 +35,6 @@
 #import "sun_lwawt_macosx_CAccessible.h"
 #import "sun_lwawt_macosx_CAccessibility.h"
 
-#ifndef NSAttributedStringKeyAccessibilitySpeechLanguage
-#define NSAttributedStringKeyAccessibilitySpeechLanguage @"NSAccessibilitySpeechLanguage"
-#endif
-
 
 // GET* macros defined in JavaAccessibilityUtilities.h, so they can be shared.
 static jclass sjc_CAccessibility = NULL;
