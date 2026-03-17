@@ -999,27 +999,30 @@ static jobject sAccessibilityClass = NULL;
 
     if (@available(macOS 26.0, *)) {
         if ([attribute isEqualToString:NSAccessibilityLanguageAttribute]) {
-            JNIEnv* env = [ThreadUtilities getJNIEnv];
-
-            GET_ACCESSIBLELOCALE_METHOD_RETURN(nil);
-            jobject val = (*env)->CallStaticObjectMethod(env, sjc_CAccessibility, sjm_getAccessibleLocale, fAccessible, fComponent);
-            CHECK_EXCEPTION();
-            if (val == NULL) {
-                return nil;
-            }
-            jclass localeClass = (*env)->GetObjectClass(env, val);
-            jmethodID toLanguageTagMethod = (*env)->GetMethodID(env, localeClass, "toLanguageTag", "()Ljava/lang/String;");
-            jstring langTagJavaString = (jstring)(*env)->CallObjectMethod(env, val, toLanguageTagMethod);
-            CHECK_EXCEPTION();
-
-            NSString* returnValue = JavaStringToNSString(env, langTagJavaString);
-            (*env)->DeleteLocalRef(env, langTagJavaString);
-
-            return returnValue;
+            return [self languageTag];
         }
     }
     return [super accessibilityAttributeValue:attribute];
 }
+
+- (NSString *)languageTag {
+    JNIEnv* env = [ThreadUtilities getJNIEnv];
+
+    GET_ACCESSIBLELOCALE_METHOD_RETURN(nil);
+    jobject val = (*env)->CallStaticObjectMethod(env, sjc_CAccessibility, sjm_getAccessibleLocale, fAccessible, fComponent);
+    CHECK_EXCEPTION();
+    if (val == NULL) {
+        return nil;
+    }
+    jclass localeClass = (*env)->GetObjectClass(env, val);
+    jmethodID toLanguageTagMethod = (*env)->GetMethodID(env, localeClass, "toLanguageTag", "()Ljava/lang/String;");
+    jstring langTagJavaString = (jstring)(*env)->CallObjectMethod(env, val, toLanguageTagMethod);
+    CHECK_EXCEPTION();
+
+    NSString* returnValue = JavaStringToNSString(env, langTagJavaString);
+    (*env)->DeleteLocalRef(env, langTagJavaString);
+
+    return returnValue;}
 
 - (NSAccessibilityOrientation)accessibilityOrientation
 {
