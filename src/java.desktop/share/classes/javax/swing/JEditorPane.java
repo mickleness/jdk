@@ -1715,13 +1715,17 @@ public class JEditorPane extends JTextComponent {
     protected class AccessibleJEditorPaneHTML extends AccessibleJEditorPane {
 
         private AccessibleContext accessibleContext;
+        private JEditorPaneAccessibleHypertextSupport axText;
 
         /**
          * Returns the accessible text.
          * @return the accessible text
          */
         public AccessibleText getAccessibleText() {
-            return new JEditorPaneAccessibleHypertextSupport();
+            if (axText == null) {
+                axText = new JEditorPaneAccessibleHypertextSupport();
+            }
+            return axText;
         }
 
         /**
