@@ -85,7 +85,7 @@ public class AccessibleActionAsSeparateClassTest {
         @Override
         protected void paintComponent(Graphics g) {
             g.setColor(clickedSuccessfully ? Color.green : Color.gray);
-            g.fillOval(0, 0, getWidth(),getHeight());
+            g.fillOval(0, 0, getWidth(), getHeight());
         }
 
         @Override
