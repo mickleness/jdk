@@ -57,7 +57,7 @@ public class VoiceOverAccessibleActionButtonTest {
         // This bug focuses on making sure the button is NOT activated via
         // a MouseEvent.
 
-        String INSTRUCTIONS = "INSTRUCTIONS (Mac-only):\n" +
+        String INSTRUCTIONS = "INSTRUCTIONS:\n" +
                 "1. Open VoiceOver\n" +
                 "2. Move the VoiceOver cursor over the button.\n" +
                 "3. Press CTRL + OPTION + SPACE to activate the button.\n\n" +
