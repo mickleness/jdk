@@ -29,8 +29,6 @@ import javax.swing.text.html.HTMLDocument;
  * @test
  * @bug 8380790
  * @summary make sure getAccessibleText() doesn't add DocumentListeners
- * @library /java/awt/regtesthelpers
- * @build PassFailJFrame
  * @run main GetAccessibleTextAddsDocumentListeners
  */
 
