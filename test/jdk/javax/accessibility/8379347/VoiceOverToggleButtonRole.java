@@ -44,7 +44,8 @@ public class VoiceOverToggleButtonRole {
                 3. Observe how VoiceOver identifies the toggle button.
 
                 Expected behavior: VoiceOver should identify it as a
-                "toggle button". It should not say "checkbox".
+                "toggle button" initially. (VO does still say "to select
+                or deselect this checkbox", though.)
 
                 If you select the link using "Accessibility Inspector":
                 it should identify its subrole as AXToggle.
