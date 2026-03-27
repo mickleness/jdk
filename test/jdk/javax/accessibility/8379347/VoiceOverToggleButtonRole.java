@@ -37,14 +37,18 @@ import javax.swing.JFrame;
 
 public class VoiceOverToggleButtonRole {
     public static void main(String[] args) throws Exception {
-        String INSTRUCTIONS = "INSTRUCTIONS (Mac-only):\n" +
-                "1. Open VoiceOver\n" +
-                "2. Move the VoiceOver cursor over the JToggleButton.\n" +
-                "3. Observe how VoiceOver identifies the toggle button.\n\n" +
-                "Expected behavior: VoiceOver should identify it as a " +
-                "\"toggle button\". It should not say \"checkbox\".\n\n" +
-                "If you select the link using \"Accessibility " +
-                "Inspector\": it should identify its subrole as AXToggle.";
+        String INSTRUCTIONS = """
+                INSTRUCTIONS (Mac-only):
+                1. Open VoiceOver
+                2. Move the VoiceOver cursor over the JToggleButton.
+                3. Observe how VoiceOver identifies the toggle button.
+
+                Expected behavior: VoiceOver should identify it as a
+                "toggle button". It should not say "checkbox".
+
+                If you select the link using "Accessibility Inspector":
+                it should identify its subrole as AXToggle.
+                """;
 
         PassFailJFrame.builder()
                 .title("VoiceOverToggleButtonRole Instruction")
