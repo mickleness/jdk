@@ -912,6 +912,15 @@ public class MenuItem extends MenuComponent implements Accessible {
             }
         }
 
+        @Override
+        public String getAccessibleActionType(int i) {
+            if (i == 0) {
+                return AccessibleAction.CLICK;
+            } else {
+                return null;
+            }
+        }
+
         /**
          * Perform the specified Action on the object
          *

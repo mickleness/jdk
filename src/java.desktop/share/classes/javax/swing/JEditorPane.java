@@ -58,6 +58,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleComponent;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleHyperlink;
@@ -1883,6 +1884,15 @@ public class JEditorPane extends JTextComponent {
                     }
                 }
                 return null;
+            }
+
+            @Override
+            public String getAccessibleActionType(int i) {
+                if (i == 0 && isValid() == true) {
+                    return AccessibleAction.CLICK;
+                } else {
+                    return null;
+                }
             }
 
             /**

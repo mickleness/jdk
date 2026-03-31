@@ -1752,6 +1752,17 @@ public class JSpinner extends JComponent implements Accessible
             return null;
         }
 
+        @Override
+        public String getAccessibleActionType(int i) {
+            if (i == 0) {
+                return AccessibleAction.INCREMENT;
+            } else if (i == 1) {
+                return AccessibleAction.DECREMENT;
+            } else {
+                return null;
+            }
+        }
+
         /**
          * Performs the specified Action on the object
          *

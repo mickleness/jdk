@@ -66,8 +66,8 @@ void initializeActions();
 {
     JNIEnv* env = [ThreadUtilities getJNIEnv];
     DECLARE_CLASS_RETURN(sjc_CAccessibility, "sun/lwawt/macosx/CAccessibility", nil);
-    DECLARE_STATIC_METHOD_RETURN(jm_getAccessibleActionDescription, sjc_CAccessibility,
-                          "getAccessibleActionDescription",
+    DECLARE_STATIC_METHOD_RETURN(jm_getAccessibleActionType, sjc_CAccessibility,
+                          "getAccessibleActionType",
                           "(Ljavax/accessibility/AccessibleAction;ILjava/awt/Component;)Ljava/lang/String;", nil);
 
     /* WeakGlobalRefs can be cleared at any time, so first get strong local refs and use those */
@@ -82,7 +82,7 @@ void initializeActions();
     }
     NSString *str = nil;
     jstring jstr = (*env)->CallStaticObjectMethod(env, sjc_CAccessibility,
-                                              jm_getAccessibleActionDescription,
+                                              jm_getAccessibleActionType,
                                               fAccessibleActionLocal,
                                               fIndex,
                                               fCompLocal );

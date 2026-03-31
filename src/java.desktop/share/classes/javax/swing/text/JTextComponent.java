@@ -3753,6 +3753,15 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
             return (String)actions[i].getValue(Action.NAME);
         }
 
+        @Override
+        public String getAccessibleActionType(int i) {
+            Action[] actions = JTextComponent.this.getActions();
+            if (i < 0 || i >= actions.length) {
+                return null;
+            }
+            return AccessibleAction.CUSTOM;
+        }
+
         /**
          * Performs the specified Action on the object
          *

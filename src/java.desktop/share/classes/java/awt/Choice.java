@@ -829,6 +829,11 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             return null;  //  To be fully implemented in a future release
         }
 
+        @Override
+        public String getAccessibleActionType(int i) {
+            return null;  //  To be fully implemented in a future release
+        }
+
         /**
          * Perform the specified Action on the object
          *

@@ -2513,6 +2513,15 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
             }
         }
 
+        @Override
+        public String getAccessibleActionType(int i) {
+            if (i == 0) {
+                return AccessibleAction.CLICK;
+            } else {
+                return null;
+            }
+        }
+
         /**
          * Perform the specified Action on the object
          *

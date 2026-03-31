@@ -182,6 +182,11 @@ public class AccessibleActionsTest extends AccessibleComponentTest {
 
             @Override
             public String getAccessibleActionDescription(int i) {
+              return getAccessibleActionType(i);
+            }
+
+            @Override
+            public String getAccessibleActionType(int i) {
               if (i == 0) {
                 return AccessibleAction.CLICK;
               }
@@ -243,6 +248,15 @@ public class AccessibleActionsTest extends AccessibleComponentTest {
             AccessibleAction aa = MyAccessibleJTextArea.super.getAccessibleAction();
             if ((aa != null) && (i >= 0) && (i < aa.getAccessibleActionCount())) {
               return aa.getAccessibleActionDescription(i);
+            }
+            return AccessibleAction.TOGGLE_POPUP;
+          }
+
+          @Override
+          public String getAccessibleActionType(int i) {
+            AccessibleAction aa = MyAccessibleJTextArea.super.getAccessibleAction();
+            if ((aa != null) && (i >= 0) && (i < aa.getAccessibleActionCount())) {
+              return aa.getAccessibleActionType(i);
             }
             return AccessibleAction.TOGGLE_POPUP;
           }

@@ -5720,6 +5720,23 @@ public class JTree extends JComponent implements Scrollable, Accessible
                 return null;
             }
 
+            @Override
+            public String getAccessibleActionType(int i) {
+                if (i < 0 || i >= getAccessibleActionCount()) {
+                    return null;
+                }
+                AccessibleContext ac = getCurrentAccessibleContext();
+                if (i == 0) {
+                    return AccessibleAction.TOGGLE_EXPAND;
+                } else if (ac != null) {
+                    AccessibleAction aa = ac.getAccessibleAction();
+                    if (aa != null) {
+                        return aa.getAccessibleActionType(i - 1);
+                    }
+                }
+                return null;
+            }
+
             /**
              * Perform the specified Action on the tree node.  If this node
              * is not a leaf, there is at least one action which can be

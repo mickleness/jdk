@@ -1928,6 +1928,15 @@ implements ItemSelectable,ListDataListener,ActionListener, Accessible {
             }
         }
 
+        @Override
+        public String getAccessibleActionType(int i) {
+            if (i == 0) {
+                return AccessibleAction.TOGGLE_POPUP;
+            } else {
+                return null;
+            }
+        }
+
         /**
          * Returns the number of Actions available in this object.  The
          * default behavior of a combo box is to have one action.

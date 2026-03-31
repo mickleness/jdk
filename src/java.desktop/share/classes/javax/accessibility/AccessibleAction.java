@@ -88,6 +88,14 @@ public interface AccessibleAction {
      */
     public static final String TOGGLE_POPUP = new String("toggle popup");
 
+
+    /**
+     * Action type is not recognized so it must be a customized
+     * AccessibleAction. This type is only used as a return value for the
+     * getAccessibleActionType() method.
+     */
+    public static final String CUSTOM = "custom";
+
     /**
      * Returns the number of accessible actions available in this object If
      * there are more than one, the first one is considered the "default" action
@@ -98,11 +106,12 @@ public interface AccessibleAction {
     public int getAccessibleActionCount();
 
     /**
-     * Returns a description of the specified action of the object.
+     * Returns a user-facing description of the specified action of the object.
      *
      * @param  i zero-based index of the actions
      * @return a {@code String} description of the action
      * @see #getAccessibleActionCount
+     * @see #getAccessibleActionType(int)
      */
     public String getAccessibleActionDescription(int i);
 
@@ -114,4 +123,21 @@ public interface AccessibleAction {
      * @see #getAccessibleActionCount
      */
     public boolean doAccessibleAction(int i);
+
+    /**
+     * Returns the action type. If it is not one of the known types, CUSTOM is
+     * returned.
+     *
+     * @param  i zero-based index of actions
+     * @return the action type of an {@code AccessibleAction}, or null if
+     * i out of bounds.
+     * @see #TOGGLE_EXPAND
+     * @see #INCREMENT
+     * @see #DECREMENT
+     * @see #CLICK
+     * @see #TOGGLE_POPUP
+     * @see #CUSTOM
+     * @see #getAccessibleActionDescription(int)
+     */
+    public String getAccessibleActionType(int i);
 }

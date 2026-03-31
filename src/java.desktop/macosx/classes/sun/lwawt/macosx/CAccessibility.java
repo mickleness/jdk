@@ -147,12 +147,12 @@ final class CAccessibility implements PropertyChangeListener {
         }
     }
 
-    public static String getAccessibleActionDescription(final AccessibleAction aa, final int index, final Component c) {
+    public static String getAccessibleActionType(final AccessibleAction aa, final int index, final Component c) {
         if (aa == null) return null;
 
         return invokeAndWait(new Callable<String>() {
             public String call() throws Exception {
-                return aa.getAccessibleActionDescription(index);
+                return aa.getAccessibleActionType(index);
             }
         }, c);
     }

@@ -64,8 +64,8 @@ public class Bug8161483 extends JFrame {
                     if (c != 1) {
                         throw new RuntimeException("getAccessibleActionCount is not 1");
                     }
-                    String s = aa.getAccessibleActionDescription(0);
-                    if (!s.equals("click")) {
+                    String s = aa.getAccessibleActionType(0);
+                    if (!s.equals(AccessibleAction.CLICK)) {
                         throw new RuntimeException("getAccessibleActionDescription is not click");
                     }
                     boolean b = aa.doAccessibleAction(0);

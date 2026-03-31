@@ -3842,6 +3842,15 @@ public class JList<E> extends JComponent implements Scrollable, Accessible
                 }
             }
 
+            @Override
+            public String getAccessibleActionType(int i) {
+                if (i == 0) {
+                    return AccessibleAction.CLICK;
+                } else {
+                    return null;
+                }
+            }
+
             /**
              * {@inheritDoc}
              * @implSpec Returns 1, i.e. there is only one action.
