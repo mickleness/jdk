@@ -35,6 +35,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.beans.BeanProperty;
 import java.beans.JavaBean;
+import java.beans.PropertyChangeEvent;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -1724,7 +1725,6 @@ public class JEditorPane extends JTextComponent {
         public AccessibleText getAccessibleText() {
             if (axText == null) {
                 axText = new JEditorPaneAccessibleHypertextSupport();
-                JEditorPane.this.addPropertyChangeListener("document", evt -> axText = null );
             }
             return axText;
         }
@@ -2009,20 +2009,32 @@ public class JEditorPane extends JTextComponent {
          */
         public JEditorPaneAccessibleHypertextSupport() {
             hyperlinks = new LinkVector();
-            Document d = JEditorPane.this.getDocument();
-            if (d != null) {
-                d.addDocumentListener(new DocumentListener() {
-                    public void changedUpdate(DocumentEvent theEvent) {
-                        linksValid = false;
-                    }
-                    public void insertUpdate(DocumentEvent theEvent) {
-                        linksValid = false;
-                    }
-                    public void removeUpdate(DocumentEvent theEvent) {
-                        linksValid = false;
-                    }
-                });
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if ("document".equals(evt.getPropertyName())) {
+                linksValid = false;
             }
+            super.propertyChange(evt);
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent theEvent) {
+            linksValid = false;
+            super.changedUpdate(theEvent);
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent theEvent) {
+            linksValid = false;
+            super.insertUpdate(theEvent);
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent theEvent) {
+            linksValid = false;
+            super.removeUpdate(theEvent);
         }
 
         /**

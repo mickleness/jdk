@@ -44,20 +44,29 @@ public class GetAccessibleTextAddsDocumentListeners {
             textPane.getAccessibleContext().getAccessibleText();
         }
         int listenerCountB = log("B", doc1.getDocumentListeners());
-        if (listenerCountB > listenerCountA + 1_000 ||
+
+        // calling textPane.getAccessibleContext().getAccessibleText() should
+        // add one or two listeners:
+
+        if (listenerCountB > listenerCountA + 10 ||
             listenerCountB == listenerCountA) {
             throw new Exception();
         }
         HTMLEditorKit kit = (HTMLEditorKit) textPane.getEditorKit();
         HTMLDocument doc2 = (HTMLDocument) kit.createDefaultDocument();
         textPane.setDocument(doc2);
+
+        // this time: our DocumentListeners related to accessibility should
+        // have already transferred from doc1 to doc2, so we shouldn't
+        // see new DocumentListeners added after calling
+        // textPane.getAccessibleContext().getAccessibleText();
+
         int listenerCountC = log("C", doc2.getDocumentListeners());
         for (int a = 0; a < 10_000; a++) {
             textPane.getAccessibleContext().getAccessibleText();
         }
         int listenerCountD = log("D", doc2.getDocumentListeners());
-        if (listenerCountD > listenerCountC + 1_000 ||
-                listenerCountD == listenerCountC) {
+        if (listenerCountD != listenerCountC) {
             throw new Exception();
         }
     }

@@ -28,6 +28,8 @@ import com.sun.beans.util.Cache;
 
 import java.beans.JavaBean;
 import java.beans.BeanProperty;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -426,10 +428,6 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
             if (old instanceof AbstractDocument) {
                 ((AbstractDocument)old).readLock();
             }
-            if (accessibleContext != null) {
-                model.removeDocumentListener(
-                    ((AccessibleJTextComponent)accessibleContext));
-            }
             if (inputMethodRequestsHandler != null) {
                 model.removeDocumentListener((DocumentListener)inputMethodRequestsHandler);
             }
@@ -452,10 +450,6 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
 
         revalidate();
         repaint();
-        if (accessibleContext != null) {
-            model.addDocumentListener(
-                ((AccessibleJTextComponent)accessibleContext));
-        }
         if (inputMethodRequestsHandler != null) {
             model.addDocumentListener((DocumentListener)inputMethodRequestsHandler);
         }
@@ -2539,7 +2533,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
     public class AccessibleJTextComponent extends AccessibleJComponent
     implements AccessibleText, CaretListener, DocumentListener,
                AccessibleAction, AccessibleEditableText,
-               AccessibleExtendedText {
+               AccessibleExtendedText, PropertyChangeListener {
 
         int caretPos;
         Point oldLocationOnScreen;
@@ -2553,6 +2547,8 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
             if (doc != null) {
                 doc.addDocumentListener(this);
             }
+            JTextComponent.this.addPropertyChangeListener("document", this);
+
             JTextComponent.this.addCaretListener(this);
             caretPos = getCaretPosition();
 
@@ -2579,6 +2575,21 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
                     }
                 }
             });
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if ("document".equals(evt.getPropertyName())) {
+                DocumentListener l = AccessibleJTextComponent.this;
+                Document oldDoc = (Document) evt.getOldValue();
+                if (oldDoc != null) {
+                    oldDoc.removeDocumentListener(l);
+                }
+                Document newDoc = (Document) evt.getNewValue();
+                if (newDoc != null) {
+                    newDoc.addDocumentListener(l);
+                }
+            }
         }
 
         /**
