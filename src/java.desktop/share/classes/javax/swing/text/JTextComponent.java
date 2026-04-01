@@ -2538,6 +2538,26 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
         int caretPos;
         Point oldLocationOnScreen;
 
+        // Fire a ACCESSIBLE_VISIBLE_DATA_PROPERTY PropertyChangeEvent
+        // when the text component moves (e.g., when scrolling).
+        // Using an anonymous class since making AccessibleJTextComponent
+        // implement ComponentListener would be an API change.
+        ComponentListener componentListener = new ComponentAdapter() {
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                try {
+                    Point newLocationOnScreen = getLocationOnScreen();
+                    firePropertyChange(ACCESSIBLE_VISIBLE_DATA_PROPERTY,
+                            oldLocationOnScreen,
+                            newLocationOnScreen);
+
+                    oldLocationOnScreen = newLocationOnScreen;
+                } catch (IllegalComponentStateException iae) {
+                }
+            }
+        };
+
         /**
          * Constructs an AccessibleJTextComponent.  Adds a listener to track
          * caret change.
@@ -2558,24 +2578,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
             } catch (IllegalComponentStateException iae) {
             }
 
-            // Fire a ACCESSIBLE_VISIBLE_DATA_PROPERTY PropertyChangeEvent
-            // when the text component moves (e.g., when scrolling).
-            // Using an anonymous class since making AccessibleJTextComponent
-            // implement ComponentListener would be an API change.
-            JTextComponent.this.addComponentListener(new ComponentAdapter() {
-
-                public void componentMoved(ComponentEvent e) {
-                    try {
-                        Point newLocationOnScreen = getLocationOnScreen();
-                        firePropertyChange(ACCESSIBLE_VISIBLE_DATA_PROPERTY,
-                                           oldLocationOnScreen,
-                                           newLocationOnScreen);
-
-                        oldLocationOnScreen = newLocationOnScreen;
-                    } catch (IllegalComponentStateException iae) {
-                    }
-                }
-            });
+            JTextComponent.this.addComponentListener(componentListener);
         }
 
         @Override
@@ -2602,6 +2605,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
             JTextComponent.this.removePropertyChangeListener("document", this);
             JTextComponent.this.removePropertyChangeListener("editorKit",
                     this);
+            JTextComponent.this.removeComponentListener(componentListener);
         }
 
         /**
