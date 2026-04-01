@@ -2548,6 +2548,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
                 doc.addDocumentListener(this);
             }
             JTextComponent.this.addPropertyChangeListener("document", this);
+            JTextComponent.this.addPropertyChangeListener("editorKit", this);
 
             JTextComponent.this.addCaretListener(this);
             caretPos = getCaretPosition();
@@ -2580,16 +2581,27 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             if ("document".equals(evt.getPropertyName())) {
-                DocumentListener l = AccessibleJTextComponent.this;
                 Document oldDoc = (Document) evt.getOldValue();
                 if (oldDoc != null) {
-                    oldDoc.removeDocumentListener(l);
+                    oldDoc.removeDocumentListener(this);
                 }
                 Document newDoc = (Document) evt.getNewValue();
                 if (newDoc != null) {
-                    newDoc.addDocumentListener(l);
+                    newDoc.addDocumentListener(this);
                 }
+            } else if ("editorKit".equals(evt.getPropertyName())) {
+                uninstall();
             }
+        }
+
+        private void uninstall() {
+            Document doc = getDocument();
+            if (doc != null) {
+                doc.removeDocumentListener(this);
+            }
+            JTextComponent.this.removePropertyChangeListener("document", this);
+            JTextComponent.this.removePropertyChangeListener("editorKit",
+                    this);
         }
 
         /**
