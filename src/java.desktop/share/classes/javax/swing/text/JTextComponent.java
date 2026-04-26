@@ -417,6 +417,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
             = "the text document model")
     public void setDocument(Document doc) {
         Document old = model;
+        AccessibleContext oldAccessibleContext = accessibleContext;
 
         /*
          * acquire a read lock on the old model to prevent notification of
@@ -452,7 +453,11 @@ public abstract class JTextComponent extends JComponent implements Scrollable, A
 
         revalidate();
         repaint();
-        if (accessibleContext != null) {
+        if (accessibleContext != null &&
+                getAccessibleContext() == oldAccessibleContext) {
+            // If accessibleContext hasn't changed: attach it to our new
+            // Document. (If it HAS changed, then when it was constructed it
+            // already attached itself to the correct Document.)
             model.addDocumentListener(
                 ((AccessibleJTextComponent)accessibleContext));
         }

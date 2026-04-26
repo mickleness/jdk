@@ -35,7 +35,8 @@ import javax.swing.text.html.HTMLDocument;
  * @summary make sure getAccessibleText() doesn't add DocumentListeners
  * @run main GetAccessibleTextAddsDocumentListeners testOriginalComplaint
  * @run main GetAccessibleTextAddsDocumentListeners testSetDocument
- * @run main GetAccessibleTextAddsDocumentListeners testDocumentListeners
+ * @run main GetAccessibleTextAddsDocumentListeners testDocumentListeners_simpleCase
+ * @run main GetAccessibleTextAddsDocumentListeners testDocumentListeners_reusingHTMLDocument
  */
 
 public class GetAccessibleTextAddsDocumentListeners {
@@ -102,7 +103,7 @@ public class GetAccessibleTextAddsDocumentListeners {
      *
      * see https://github.com/openjdk/jdk/pull/30401#discussion_r3025612299
      */
-    public static void testDocumentListeners() throws Exception {
+    public static void testDocumentListeners_simpleCase() throws Exception {
         JTextPane textPane = new JTextPane();
 
         // each call to setContentType replaces textPane.getDocument()
@@ -119,6 +120,36 @@ public class GetAccessibleTextAddsDocumentListeners {
 
         int docListenerCount = log("testDocumentListeners_simpleCase",
                 textPane.getDocument());
+        assertTrue(docListenerCount < 10);
+    }
+
+    /**
+     * This is a variation of testDocumentListeners_simpleCase, except here
+     * we're constantly reinstalling the same HTMLDocument. This presented a
+     * separate challenge because JTextComponent would automatically reattach
+     * the AccessibleContext as a DocumentListener
+     */
+    public static void testDocumentListeners_reusingHTMLDocument()
+            throws Exception {
+        JTextPane textPane = new JTextPane();
+        textPane.setContentType("text/html");
+
+        HTMLDocument htmlDoc = new HTMLDocument();
+        textPane.setDocument(htmlDoc);
+
+        for (int a = 0; a < 100; a++) {
+            textPane.setContentType("text/plain");
+            assertTrue(!(textPane.getAccessibleContext().
+                    getAccessibleText() instanceof AccessibleHypertext));
+
+            textPane.setContentType("text/html");
+            // this test reuses htmlDoc. When that happens are we adding too
+            // many DocumentListeners?
+            textPane.setDocument(htmlDoc);
+            testLinkCount(textPane);
+        }
+
+        int docListenerCount = log("testDocumentListeners_reusingHTMLDocument", textPane.getDocument());
         assertTrue(docListenerCount < 10);
     }
 
