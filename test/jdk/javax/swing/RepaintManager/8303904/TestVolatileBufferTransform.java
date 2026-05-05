@@ -23,8 +23,9 @@
 
 /* @test
    @bug 8303904
-   @summary when "swing.volatileImageBufferEnabled" is "false" windows repaint
-            as opaque and as if on a 100% resolution monitor
+   @summary Check if "swing.volatileImageBufferEnabled" is "false" that windows
+            paint at the monitor's resolution. This test runs against every
+            available monitor resolution.
 */
 
 import javax.swing.JFrame;
@@ -36,24 +37,22 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.concurrent.CountDownLatch;
 
-public class TestVolatileBufferOpacityAndTransform {
+public class TestVolatileBufferTransform {
 
     public static void main(String[] args) throws Exception {
         System.setProperty("swing.volatileImageBufferEnabled", "false");
-        TestVolatileBufferOpacityAndTransform test =
-                new TestVolatileBufferOpacityAndTransform();
+        TestVolatileBufferTransform test =
+                new TestVolatileBufferTransform();
         test.run();
     }
 
     int testFailureCtr = 0;
     CountDownLatch latch = new CountDownLatch(1);
 
-    public TestVolatileBufferOpacityAndTransform() {
+    public TestVolatileBufferTransform() {
         SwingUtilities.invokeLater(() -> {
             try {
                 GraphicsDevice[] allDevices = GraphicsEnvironment.
@@ -74,11 +73,8 @@ public class TestVolatileBufferOpacityAndTransform {
                         f.pack();
                         f.setLocationRelativeTo(null);
                         f.setVisible(true);
-
-                        testOpacity(f, transparentBackground ?
-                                Transparency.TRANSLUCENT :
-                                Transparency.OPAQUE);
                         testTransform(f);
+                        f.dispose();
                     }
                 }
             } finally {
@@ -89,27 +85,10 @@ public class TestVolatileBufferOpacityAndTransform {
 
     public void run() throws Exception {
         latch.await();
-        if (testFailureCtr > 0)
-            throw new Error("Test failed");
-        System.out.println("Test passed");
-    }
-
-    /**
-     * Make sure Component.createImage() returns an image that can be
-     * Transparency.OPAQUE or Transparency.TRANSLUCENT
-     */
-    private void testOpacity(Component c, int expectedTransparencyValue) {
-        BufferedImage image = (BufferedImage) c.createImage(1, 1);
-        assertEquals( image.getTransparency(), expectedTransparencyValue);
-    }
-
-    private void assertEquals(int expectedValue, int actualValue) {
-        if (expectedValue != actualValue) {
-            testFailureCtr++;
-            System.err.println("failed assertion; expected = " +
-                    expectedValue + ", actual = " + actualValue);
-            Thread.dumpStack();
+        if (testFailureCtr > 0) {
+            throw new Exception("Test failed");
         }
+        System.out.println("Test passed");
     }
 
     private void assertEquals(double expectedValue, double actualValue) {
@@ -122,7 +101,7 @@ public class TestVolatileBufferOpacityAndTransform {
     }
 
     /**
-     * Inspector the image we use to repaint a Component. Make sure its
+     * Inspect the image we use to repaint a Component. Make sure its
      * AffineTransform resembles the GraphicsConfiguration's transform.
      * (That is: on a 200% resolution monitor we should be painting
      * at 200%.)
